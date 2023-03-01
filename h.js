@@ -72,6 +72,10 @@ export class SliderHuePicker extends React.Component {
          * Default value is false, because some Android phone [PanGestureHandler causes Animated Value to jump when using native driver](https://github.com/software-mansion/react-native-gesture-handler/issues/984)
          */
         useNativeDriver: PropTypes.bool,
+        /**
+         * Reversed color picker track image
+         */
+        isReversedColorPicker: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -81,6 +85,7 @@ export class SliderHuePicker extends React.Component {
         moveVelocityThreshold: 2000,
         trackImage: require('./rainbow_slider.png'),
         useNativeDriver: false,
+        isReversedColorPicker: false,
     };
 
     getColor() {
@@ -99,7 +104,7 @@ export class SliderHuePicker extends React.Component {
     _onColorChange(x, resType) {
         let color = {
             ...this.state.color,
-            h: x,
+            h: this.props.isReversedColorPicker ? (this.props.maximumValue - x) : x,
         };
         this.setState({
             color,
@@ -137,11 +142,11 @@ export class SliderHuePicker extends React.Component {
                 <Slider
                     style={style}
                     trackStyle={[{backgroundColor: 'transparent'}, trackStyle]}
-                    trackImage={trackImage}
+                    trackImage={this.props.isReversedColorPicker ? require('./rainbow_slider_reversed.png') : trackImage}
                     thumbStyle={[{backgroundColor: thumbColor}, thumbStyle]}
                     minimumValue={minimumValue}
                     maximumValue={maximumValue}
-                    value={color.h}
+                    value={this.props.isReversedColorPicker ? (this.props.maximumValue - color.h) : color.h}
                     step={step}
                     moveVelocityThreshold={moveVelocityThreshold}
                     useNativeDriver={useNativeDriver}
